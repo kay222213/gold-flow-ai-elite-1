@@ -1,0 +1,124 @@
+services:
+  - type: web
+    name: gold-flow-ai-elite
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # Full-stack service: FastAPI serves frontend/ and /api/* from the same HTTPS origin.
+      - key: MARKET_DATA_SOURCE
+        value: twelvedata
+      - key: SYMBOL
+        value: XAUUSD
+      - key: TWELVEDATA_SYMBOL
+        value: XAU/USD
+      - key: TWELVEDATA_WS_ENABLED
+        value: "true"
+      - key: TWELVEDATA_WS_STALE_SECONDS
+        value: "15"
+      - key: TWELVEDATA_QUOTE_CACHE_SECONDS
+        value: "10"
+      - key: TWELVEDATA_M5_CACHE_SECONDS
+        value: "60"
+      - key: TWELVEDATA_M15_CACHE_SECONDS
+        value: "120"
+      - key: TWELVEDATA_H1_CACHE_SECONDS
+        value: "300"
+      - key: POLL_SECONDS
+        value: "3"
+      - key: MAX_QUOTE_AGE_SECONDS
+        value: "90"
+      - key: MAX_M5_CANDLE_AGE_SECONDS
+        value: "600"
+      - key: MAX_M15_CANDLE_AGE_SECONDS
+        value: "1800"
+      - key: MAX_H1_CANDLE_AGE_SECONDS
+        value: "7200"
+      - key: MAX_H4_CANDLE_AGE_SECONDS
+        value: "28800"
+      - key: PROVIDER_TIMEOUT_SECONDS
+        value: "8"
+      - key: CORS_ORIGINS
+        value: https://kay222213.github.io
+
+      # Provider API keys are omitted so initial deployment can boot without them.
+      # Add TWELVEDATA_API_KEY, FRED_API_KEY, TRADING_ECONOMICS_API_KEY, OPENAI_API_KEY,
+      # and DATABENTO_API_KEY in Render → Environment after service creation. Never commit keys.
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
+      - key: OPENAI_WEB_SEARCH
+        value: "true"
+      - key: OPENAI_TIMEOUT_SECONDS
+        value: "35"
+      - key: AI_MACRO_REFRESH_SECONDS
+        value: "900"
+      - key: INTELLIGENCE_REFRESH_SECONDS
+        value: "300"
+
+      # Genuine CME GC trade flow + MBP-10 depth are separate from OTC spot XAUUSD.
+      - key: DATABENTO_DATASET
+        value: GLBX.MDP3
+      - key: DATABENTO_GOLD_SYMBOL
+        value: GC.FUT
+      - key: DATABENTO_DEPTH_ENABLED
+        value: "true"
+      - key: ORDER_FLOW_REQUIRED
+        value: "true"
+      - key: ORDER_BOOK_REQUIRED
+        value: "true"
+      - key: ORDER_FLOW_WINDOW_SECONDS
+        value: "300"
+      - key: ORDER_FLOW_MIN_DELTA_PERCENT
+        value: "5"
+      - key: ORDER_BOOK_MIN_IMBALANCE_PERCENT
+        value: "5"
+      - key: ORDER_BOOK_MAX_AGE_SECONDS
+        value: "30"
+      - key: NEWS_BLACKOUT_MINUTES
+        value: "15"
+      - key: ECONOMIC_CALENDAR_REQUIRED
+        value: "true"
+
+      # TradingView confirmed-bar alerts. Render generates the token; configure the same token in Pine.
+      - key: TRADINGVIEW_ALLOWED_TICKERS
+        value: XAUUSD,XAU/USD,GOLD
+      - key: TRADINGVIEW_WEBHOOK_TOKEN
+        generateValue: true
+      - key: ADMIN_API_TOKEN
+        generateValue: true
+
+      # Broker specifications are deliberately not guessed. Add BROKER_TICK_SIZE, BROKER_TICK_VALUE_ACCOUNT_CCY,
+      # BROKER_VOLUME_MIN, BROKER_VOLUME_MAX and BROKER_VOLUME_STEP in Render → Environment only after
+      # checking the actual broker contract. Tick value is account-currency P/L per tick for 1.00 lot.
+      - key: BROKER_ACCOUNT_CURRENCY
+        value: ZAR
+      - key: BROKER_SPECS_VERIFIED
+        value: "false"
+
+      # Initial dashboard risk values. Per-device values can override the analysis request only;
+      # these are not broker-side loss limits and do not auto-execute trades.
+      - key: ACCOUNT_EQUITY
+        value: "1000"
+      - key: RISK_PERCENT
+        value: "1"
+      - key: MAX_DAILY_LOSS
+        value: "200"
+      - key: DAILY_TARGET
+        value: "2000"
+      - key: REALIZED_PNL_TODAY
+        value: "0"
+      - key: MIN_REWARD_RISK
+        value: "2"
+      - key: MAX_SPREAD_PRICE
+        value: "0.50"
+      - key: MIN_ATR_PRICE
+        value: "0.25"
+      - key: MIN_STOP_DISTANCE_PRICE
+        value: "0.50"
+      - key: MIN_STOP_ATR_MULTIPLE
+        value: "1.0"
+      - key: STOP_BUFFER_ATR_MULTIPLE
+        value: "0.20"
+      - key: TARGET_ATR_MULTIPLE
+        value: "1.50"

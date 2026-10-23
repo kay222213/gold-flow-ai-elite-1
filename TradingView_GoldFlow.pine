@@ -1,0 +1,11 @@
+//@version=5
+indicator("The Fundamental Edge · GoldFlow Data Bridge", overlay=true)
+// Create an alert with condition: Any alert() function call; webhook URL = your HTTPS backend /api/webhook/tradingview
+// This forwards confirmed OHLC bars only. It does NOT provide bid/ask, full depth, footprint, or broker execution.
+secret = input.string("REPLACE_WITH_SAME_SERVER_SECRET", "Webhook shared secret")
+validTf = timeframe.period == "5" or timeframe.period == "15" or timeframe.period == "60" or timeframe.period == "240" or timeframe.period == "1D"
+if barstate.isconfirmed and validTf
+    payload = '{"token":"' + secret + '","ticker":"' + syminfo.ticker + '","timeframe":"' + timeframe.period + '","time":' + str.tostring(time) + ',"open":' + str.tostring(open) + ',"high":' + str.tostring(high) + ',"low":' + str.tostring(low) + ',"close":' + str.tostring(close) + ',"volume":' + str.tostring(volume) + '}'
+    alert(payload, alert.freq_once_per_bar_close)
+plot(ta.ema(close, 20), "EMA 20", color=color.gold)
+plot(ta.ema(close, 50), "EMA 50", color=color.orange)

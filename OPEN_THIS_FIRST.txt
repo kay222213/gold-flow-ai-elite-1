@@ -1,0 +1,18 @@
+GOLD FLOW AI — THE FUNDAMENTAL EDGE
+
+THIS SOURCE BUNDLE CONTAINS THE FULL-STACK APPLICATION, NOT JUST A STATIC MOCKUP.
+
+Recommended deployment: create a Render Blueprint from this repository and use the included render.yaml. The Docker service serves both frontend and backend from one HTTPS URL. GitHub Pages alone cannot run the Python backend and is available only as a manual, optional frontend deployment.
+
+Live operation requires genuine third-party services, their account/API keys, suitable data entitlements, and the exact contract specifications of the venue where you place manual trades. Those secrets are intentionally NOT included in the archive or source code. Do not commit API keys to GitHub or paste them into the browser.
+
+Required for the strict default signal gate:
+- Twelve Data API key / entitlement for XAU/USD prices and OHLC; the WebSocket quote stream is attempted when the selected plan supports it, otherwise cached REST is used.
+- Databento key and suitable CME GC trades + MBP-10 depth entitlement for real futures aggressor flow and L2 depth.
+- Exact XAUUSD tick size, tick value per tick per 1.00 lot in the selected account currency, minimum volume, maximum volume and volume step; configure them in backend environment and set BROKER_SPECS_VERIFIED=true only after checking all values against the broker's contract specification.
+- FRED key for macro yields/USD context; Trading Economics key for a structured US calendar; OpenAI API key for AI-assisted macro synthesis. GDELT headline discovery is attempted without a key.
+- To receive TradingView bars, configure the generated TRADINGVIEW_WEBHOOK_TOKEN in the included Pine script and create confirmed-bar alerts.
+
+The engine fails closed. Without fresh price/candles, verified instrument specifications, current required order-flow and depth, or when a target/stop/risk gate fails, the app must show NO TRADE or PRICE PLAN rather than fabricate a signal. It does not send orders to a broker, and no software can guarantee profitable trades.
+
+On iPhone after deployment: open the full-stack HTTPS service URL in Safari → Share → Add to Home Screen.
